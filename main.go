@@ -1,15 +1,19 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
+	"acorneo/powerbanks/utils"
+	"log"
 )
 
 func main() {
-	server := gin.Default()
-	server.GET("/ping", func(context *gin.Context) {
-		context.JSON(200, gin.H{
-			"message": "pong",
-		})
-	})
-	server.run()
+	db, err := utils.OpenConnection()
+	if err != nil {
+		log.Fatalln("Failed to connect to database: ", err)
+	}
+	defer utils.CloseConnection(db)
+
+	err = utils.InsertExcuse(db, "Никогда не говори Никита.")
+	if err != nil {
+		log.Println("Failed to insert excuse: ", err)
+	}
 }
